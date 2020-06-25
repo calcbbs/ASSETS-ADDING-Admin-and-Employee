@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    {% include 'snippets/css.html' %}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        .overlay {
+            position: fixed;
+            width: 60%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background: green;
+            z-index: 1;
+          }
+        .white-screen{
+            width:40%;
+            height: 100%;
+            background-color: white;
+            z-index: 10;
+            float: right;
+        }
+        .login-form{
+            margin-top: 200px;
+            text-align: center;
+        }
+        .login-from h1{
+            text-align: center;
+        }
+        label{
+            font-size: 18px;
+            color:green;
+            font-weight: bold;
+        }
+        .username{
+            margin-left: -16px;
+        }
+        .username, .password{
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="white-screen">
+        <div class="login-form">
+            <h1>Welcome to <br>
+                Inventory Tracker</h1>
+            <h2>Please Login</h2>
+            <form method="POST"> {% csrf_token %}
+                <label for="id">Employee-ID</label>
+                <input type="text" name = 'id' placeholder="Enter ID"> <br>
+                <label for="pw">Password</label>
+                <input type="password" name = 'pw' placeholder="Enter Password"><br>
+                <button class="btn btn-success" type="submit">Login</button>
+            </form>
+            {% if error %}
+            <p style="color:red;">{{error_message}}</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

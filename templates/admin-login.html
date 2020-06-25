@@ -1,0 +1,126 @@
+{% extends "common.html" %}
+{% block admin-login %}
+<div class="container">
+    <button class="btn btn-success" data-toggle="modal" data-target="#add-asset">
+        Add Asset
+    </button>
+    {% if granderror %}
+    <p style="color:red; font-size: 16px;"> {{granderror}} </p>
+    {% endif %}
+    <h5 style = "margin-top:20px;">Assets are as follows</h5>
+    <table>
+        <tr>
+            <th>
+                AssetID
+            </th>
+            <th>
+                Device-Type
+            </th>
+            <th>
+                Manufacture-Date
+            </th>
+            <th>
+                S.No
+            </th>
+            <th>
+                Warranty-Date
+            </th>
+        </tr>
+        {% for object in assettable %}
+        <tr>
+            <td>{{object.ASSETID}}</td>
+            <td>{{object.DEVICE}}</td>
+            <td>{{object.MANUFACTURE}}</td>
+            <td>{{object.SNO}}</td>
+            <td>{{object.WARRANTYEXPIRY}}</td>
+            <td>
+                <button class="btn btn-success btn-sm" data-toggle="modal"  data-target="#{{object.ASSETID}}">
+                    Assign
+                </button>
+            </td>
+        </tr>
+        <div class="modal fade" id="{{object.ASSETID}}" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Assign Asset:{{object.ASSETID}} </h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST"> {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="first-name" style="font-size:22px;">First Name</label>
+                                    <input type="text" id = 'first-name' name = 'first-name' placeholder='Enter First Name' class="form-control inputsm validate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="last-name" style="font-size:22px;">Last Name</label>
+                                    <input type="text" id = 'last-name' name = 'last-name' placeholder='Enter Last Name' class="form-control inputsm validate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="empid" style="font-size:22px;">Employee ID</label>
+                                    <input type="number" id="empid" min="0" name = 'empid' required placeholder='Enter Employee ID' class="form-control inputsm validate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email-id" style="font-size:22px;">Email: </label>
+                                    <input type="email" id="email-id" min="0" name = 'email' placeholder='Enter Employee ID' class="form-control inputsm validate">
+                                </div>
+                                <button class="btn btn-success btnsm" value = "{{object.ASSETID}}" name="assignform" type="submit">ADD</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </table>
+    <div class="modal fade" id="add-asset" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Assets Adding Form</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST"> {% csrf_token %}
+                            <div class="form-group">
+                                <label for="assetid" style="font-size:22px;">AssetID</label>
+                                <input type="text" id = 'assetid' name = 'ass-id' required placeholder='Enter Asset ID' class="form-control inputsm validate">
+                            </div>
+                            <div class="form-group">
+                                <label for="device" style="font-size:22px;">Device</label>
+                                <select name="device" required class="form-control" id="device">
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="Mouse">Mouse</option>
+                                    <option value="Monitor">Monitor</option>
+                                    <option value="CPU">CPU</option>
+                                    <option value="Headset">Headset</option>
+                                    <option value="Mobile-Phone">Mobile Phone</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sno" style="font-size:22px;">Serial No</label>
+                                <input type="number" min="0"  required name='sno' id = 'sno' required placeholder='Enter Serial No' class="form-control validate">
+                            </div>
+                            <div class="form-group">
+                                <label for="mdate" style="font-size:22px;">Manufacture Date</label>
+                                <input type="date" required name='mdate' id='mdate' required placeholder='Enter Manufature Date' class="form-control validate">
+                            </div>
+                            <div class="form-group">
+                                <label for="wdate" style="font-size:22px;">Warranty Expiry Date</label>
+                                <input type="date" required name='wdate' id='wdate' required placeholder='Enter Warranty Expiry Date' class="form-control validate">
+                            </div>
+                            <button class="btn btn-success btnsm" type="submit" name="addasset">Save</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock admin-login %}

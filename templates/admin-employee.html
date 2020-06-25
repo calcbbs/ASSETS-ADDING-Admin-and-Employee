@@ -1,0 +1,116 @@
+{% extends "common.html" %}
+{% block admin-employee %}
+<div class="container">
+    <button class="btn btn-success" data-toggle="modal" data-target="#add-employee">
+        Add Employee
+    </button>
+    {% if granderror %}
+        <p style="color:red;font-size:16px;">{{granderror}}</p>
+    {% endif %}
+    <h5 style = "margin-top:20px;">Following is the list of employees.</h5>
+    <table>
+        <tr>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Employee-ID</th>
+            <th>Email-Id</th>
+        </tr>
+        {% for object in employeetable %}
+        <tr>
+            <td>{{object.First_Name}}</td>
+            <td>{{object.Last_Name}}</td>
+            <td>{{object.Employee_ID}}</td>
+            <td>{{object.Employee_Email}}</td>
+            {% comment %} <td><a href="#"><button class="btn btn-success btn-sm">View-Assets</button></a></td> {% endcomment %}
+            <td>
+                <!-- Trigger the modal with a button -->
+                <form action="" method="POST"> {% csrf_token %}
+                    <button type="button" name="view-asset" class="btn btn-success btn-sm" data-toggle="modal"  data-target="#{{object.Employee_ID}}">
+                        View-Assets
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% for object in employeetable %}
+    <div class="modal fade" id="{{object.Employee_ID}}" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Employee-ID : {{object.Employee_ID}} </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body asset-detail">
+                    <table>
+                        <tr>
+                            <th>Asset-ID</th>
+                            <th>Device</th>
+                            <th>Manufacturing-Date</th>
+                            <th>Warrany Expiry Date</th>
+                            <th>Serial-No</th>
+                        </tr>
+                    {% for assetemp in assetemptable %}
+                        {% if assetemp.Employeeid == object.Employee_ID %}
+                            {% for asset in assettable %}
+                                {% if assetemp.Assetid == asset.ASSETID %}
+                                <tr class = "asset-data">
+                                    <td>{{asset.ASSETID}}</td>
+                                    <td>{{asset.DEVICE}}</td>
+                                    <td>{{asset.MANUFACTURE}}</td>
+                                    <td>{{asset.WARRANTYEXPIRY}}</td>
+                                    <td>{{asset.SNO}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+        <!-- Modal -->
+        <div class="modal fade" id="add-employee" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Employee Adding Form</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 18px">The below is the form for adding the things</p>
+                        <form method="POST"> {% csrf_token %}
+                            <div class="form-group">
+                                <label for="id" style="font-size:22px;">Employee-ID</label>
+                                <input type="number" min="0" name = 'emp-id' required placeholder='Enter Employee ID' class="form-control inputsm validate">
+                            </div>
+                            <div class="form-group">
+                                <label for="id" style="font-size:22px;">First Name</label>
+                                <input type="text" name='first-name' required placeholder='Enter First Name' class="form-control validate">
+                            </div>
+                            <div class="form-group">
+                                <label for="id" style="font-size:22px;">Last Name</label>
+                                <input type="text" name='last-name' required placeholder='Enter Last Name' class="form-control validate">
+                            </div>
+                            <div class="form-group">
+                                <label for="id" style="font-size:22px;">Email-id</label>
+                                <input type="email" name='email' required placeholder='Enter Email-ID' class="form-control validate">
+                            </div>
+                            <button class="btn btn-success btnsm" type="submit" name = "employee-save">Save</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock admin-employee %}

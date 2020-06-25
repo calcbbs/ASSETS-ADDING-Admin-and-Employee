@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{grandrole}} | Asset Management system</title>
+    {% include 'snippets/css.html' %}
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+        .sidenav {
+            height: 100%;
+            width: 160px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+        .name-display{
+            width: 100%;
+            height:10%;
+            background-color: green;
+            color: white;
+            margin-top: -36px;
+            text-align: center;
+        }
+        .user, .role {
+            color:white;
+            padding-top:25px;
+        }
+        .header-logout{
+            height: auto;
+            width:100%;
+            text-align: right;
+            margin-bottom: 10px;
+
+        }
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+        .main {
+            margin-left: 160px; /* Same as the width of the sidenav */
+            font-size: 28px; /* Increased text to enable scrolling */
+            padding: 0px 10px;
+        }
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+        }
+        table {
+            border-spacing: 5px;
+            text-align: center;
+        }
+        th {
+            padding-right: 20px;
+            font-size: 24px;
+        }
+        td {
+            padding-right: 15px;
+            font-size: 20px;
+            text-align: center;
+        }
+        a:active {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <!-- Side navigation -->
+<div class="sidenav">
+    <div class="name-display">
+        <p class="user">{{granduser}}</p>
+    </div>
+    <a href="/employee-login">Employee-Details</a>
+</div>
+    <!-- Page content -->
+<div class="main">
+    <div>
+        <div class="header-logout">
+            <button type="button" name = 'pwchange' class="btn btn-primary" style="display:inline"data-toggle="modal" data-target="#change-password">Change Password</button>
+            <form method="POST" style="display:inline"> {% csrf_token %}
+                <button type="submit" name = 'Logout' class="btn btn-danger">
+                    Logout
+                </button>
+            </form>
+        </div>
+        {% if password_message %}
+        <p style="color:red;font-size:16px;text-align:right;">{{password_message}}</p>
+        {% endif %}
+        <!-- Modal -->
+        <div class="modal fade" id="change-password" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Change password for {{grandid}}</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST"> {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="pw" style="font-size:22px;">Current Password</label>
+                                    <input type="password" name = 'pw' required placeholder='Enter current password' class="form-control inputsm validate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cpw" style="font-size:22px;">New Password</label>
+                                    <input type="password" name='cpw' required placeholder='Enter new Password' class="form-control validate">
+                                </div>
+                                <button class="btn btn-success btnsm" type="submit" name = "change-password">Change-password</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <h1>Employee details: </h1>
+        {{message}}
+        <div class="container">
+            <h5>Site-Role: {{grandrole}}</h5>
+            {% for obj in empqueryset %}
+                Employee-ID: {{obj.Employee_ID}} <br>
+                First Name: {{obj.First_Name}} <br>
+                Last Name: {{obj.Last_Name}} <br>
+                Company Name:{{obj.Company_Name}} <br>
+                Email: {{obj.Employee_Email}} <br>
+            {% endfor %}
+                Assets-Taken:
+                <table>
+                    <th>Asset-ID</th>
+                    <th>Device</th>
+                    <th>Manufacture-date</th>
+                    <th>S.No</th>
+                    <th>Warranty-Date</th>
+                {% for assetemp in assetempqueryset  %}
+                    {% if assetemp.Employeeid == userid %}
+                            {% for asset in assetqueryset %}
+                                {% if asset.ASSETID == assetemp.Assetid  %}
+                                    <tr>
+                                        <td>{{asset.ASSETID}}</td>
+                                        <td>{{asset.DEVICE}}</td>
+                                        <td>{{asset.MANUFACTURE}}</td>
+                                        <td>{{asset.SNO}}</td>
+                                        <td>{{asset.WARRANTYEXPIRY}}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                </table>
+        </div>
+    </div>
+{% include 'snippets/js.html' %}
+</body>
+</html>
